@@ -36,6 +36,43 @@ async function fetchBooks(searchTerm) {
     }
 }
 
+function renderSearchResults(books) {
+    resultsContainer.innerHTML = '';
+
+    if (books.length === 0) {
+        resultsContainer.textContent = 'No books found.';
+        return;
+    }
+
+    books.forEach((book) => {
+        const card = document.createElement('article');
+        card.classList.add('book-card');
+
+        const title = document.createElement('h3');
+        title.textContent = book.volumeInfo.title || 'No title';
+
+        const author = document.createElement('p');
+        author.textContent = book.volumeInfo.authors
+            ? book.volumeInfo.authors[0]
+            : 'Unknown author';
+
+        const cover = document.createElement('img');
+        cover.src = book.volumeInfo.imageLinks?.thumbnail || '';
+        cover.alt = book.volumeInfo.title || 'Book cover';
+
+        const addBtn = document.createElement('button');
+        addBtn.textContent = 'Add';
+        
+        card.appendChild(title);
+        card.appendChild(cover);    
+        card.appendChild(author);
+        card.appendChild(addBtn);
+
+        resultsContainer.appendChild(card);
+    });
+}
+
+
 searchBtn.addEventListener('click', async () => {
     const searchTerm = searchInput.value.trim();
 
@@ -47,7 +84,7 @@ searchBtn.addEventListener('click', async () => {
 
     try {
         const books = await fetchBooks(searchTerm);
-        console.log(books);
+        renderSearchResults(books);
     } catch (error) {
         console.error('Error fetching books:', error);
         alert('Error fetching books. Please try again later.');
@@ -65,7 +102,7 @@ searchInput.addEventListener('keydown', async (e) => {
 
     try {
         const books = await fetchBooks(searchTerm);
-        console.log(books);
+        renderSearchResults(books);
     } catch (error) {
         console.error('Error fetching books:', error);
         alert('Error fetching books. Please try again later.');
