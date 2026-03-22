@@ -1,7 +1,9 @@
 # Book_status_Kanban_Board
+
 A Vanilla JavaScript app for searching books via API and organising them by reading status.
 
 # Features
+
 - search books with API
 - add books to the board
 - organise books by status
@@ -9,16 +11,19 @@ A Vanilla JavaScript app for searching books via API and organising them by read
 - drag and drop between columns
 
 # Tech Stack
+
 - HTML
 - CSS
 - JavaScript
 - API
 - localStorage
 
-# bProject Status
+# Project Status
+
 In progress
 
 # Future Improvements
+
 - edit notes
 - dark mode
 - better drag and drop UX

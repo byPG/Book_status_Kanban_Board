@@ -152,7 +152,7 @@ input {
 .book-card img {
   width: 100%;
   height: 260px;
-  object-fit: cover;
+  object-fit: covers;
   border-radius: var(--radius-md);
   background: #11151f;
   border: 1px solid var(--border);
