@@ -16,6 +16,7 @@ function saveBooks(books) {
 }
 
 
+
 async function fetchBooks(searchTerm) {
     const url =  `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}`;
    
@@ -69,6 +70,20 @@ function renderSearchResults(books) {
         card.appendChild(addBtn);
 
         resultsContainer.appendChild(card);
+        addBtn.addEventListener('click', () => {
+            const bookObj = {
+                id: book.id,
+                title: book.volumeInfo.title || 'No title',
+                author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'Unknown author',
+                cover: book.volumeInfo.imageLinks?.thumbnail || 'image.png',
+                status: 'to-read',
+            };
+            const savedBooks = getBooks();
+            savedBooks.push(bookObj);
+            saveBooks(savedBooks);
+            renderBoard();
+        });
+
     });
 }
 
@@ -102,9 +117,50 @@ searchInput.addEventListener('keydown', (e) => {
 });
 
 
-// document.addEventListener("DOMContentLoaded", function () {
-// const savedBooks = getBooks();
+document.addEventListener("DOMContentLoaded", function () {
+const savedBooks = getBooks();
 
-// savedBooks.forEach((book) => {
-//     renderBook(book);
-// });});
+    savedBooks.forEach((book) => {
+        const card = document.createElement('article');
+        card.classList.add('book-card');
+
+        const title = document.createElement('h3');
+        title.textContent = book.title || 'No title';
+
+        const author = document.createElement('p');
+        author.textContent = book.author
+            ? book.author
+            : 'Unknown author';
+
+        const cover = document.createElement('img');
+        cover.src = book.cover || 'image.png';
+        cover.alt = book.title || 'Book cover';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        
+        card.appendChild(title);
+        card.appendChild(cover);    
+        card.appendChild(author);
+        card.appendChild(deleteBtn);
+
+        deleteBtn.addEventListener('click', () => {
+            const savedBooks = getBooks();
+            const bookIndex = savedBooks.findIndex((b) => b.id === book.id);
+            if (bookIndex !== -1) {
+                savedBooks.splice(bookIndex, 1);
+                saveBooks(savedBooks);
+                renderBoard();
+            }
+        });
+
+            if (book.status === 'to-read') {
+                toReadCol.appendChild(card);
+            } else if (book.status === 'reading') {
+                readingCol.appendChild(card);
+            } else if (book.status === 'finished') {
+                finishedCol.appendChild(card);
+            }
+    });
+    
+});
