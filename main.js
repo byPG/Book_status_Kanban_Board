@@ -3,7 +3,7 @@
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const resultsContainer = document.getElementById('resultsContainer');
-const toReadCol = document.getElementById('toReadColumn');
+const booksToReadCol = document.getElementById('booksToReadColumn');
 const readingCol = document.getElementById('readingColumn');
 const finishedCol = document.getElementById('finishedColumn');
 
@@ -14,8 +14,6 @@ function getBooks() {
 function saveBooks(books) {
     localStorage.setItem('books', JSON.stringify(books));
 }
-
-
 
 async function fetchBooks(searchTerm) {
     const url =  `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}`;
@@ -49,7 +47,7 @@ function renderSearchResults(books) {
         const card = document.createElement('article');
         card.classList.add('book-card');
 
-        const title = document.createElement('h3');
+        const title = document.createElement('h4');
         title.textContent = book.volumeInfo.title || 'No title';
 
         const author = document.createElement('p');
@@ -81,7 +79,7 @@ function renderSearchResults(books) {
             const savedBooks = getBooks();
             savedBooks.push(bookObj);
             saveBooks(savedBooks);
-            renderBoard();
+            renderBoardWithBooks();
         });
 
     });
@@ -116,33 +114,40 @@ searchInput.addEventListener('keydown', (e) => {
     }
 });
 
+function renderBoardWithBooks(){
+    booksToReadCol.innerHTML = '';
+    readingCol.innerHTML = '';
+    finishedCol.innerHTML = '';
 
-document.addEventListener("DOMContentLoaded", function () {
-const savedBooks = getBooks();
+    const savedBooks = getBooks();
 
     savedBooks.forEach((book) => {
-        const card = document.createElement('article');
-        card.classList.add('book-card');
-
-        const title = document.createElement('h3');
-        title.textContent = book.title || 'No title';
-
-        const author = document.createElement('p');
-        author.textContent = book.author
-            ? book.author
-            : 'Unknown author';
+       const card = document.createElement('article');
+        card.classList.add('book-card', 'board-book-card');
 
         const cover = document.createElement('img');
+        cover.classList.add('board-book-cover');
         cover.src = book.cover || 'image.png';
         cover.alt = book.title || 'Book cover';
 
+        const info = document.createElement('div');
+        info.classList.add('book-info');
+
+        const title = document.createElement('h4');
+        title.textContent = book.title || 'No title';
+
+        const author = document.createElement('p');
+        author.textContent = book.author || 'Unknown author';
+
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-        
-        card.appendChild(title);
-        card.appendChild(cover);    
-        card.appendChild(author);
-        card.appendChild(deleteBtn);
+
+        info.appendChild(title);
+        info.appendChild(author);
+        info.appendChild(deleteBtn);
+
+        card.appendChild(cover);
+        card.appendChild(info);
 
         deleteBtn.addEventListener('click', () => {
             const savedBooks = getBooks();
@@ -150,17 +155,21 @@ const savedBooks = getBooks();
             if (bookIndex !== -1) {
                 savedBooks.splice(bookIndex, 1);
                 saveBooks(savedBooks);
-                renderBoard();
+                renderBoardWithBooks();
             }
         });
 
             if (book.status === 'to-read') {
-                toReadCol.appendChild(card);
+                booksToReadCol.appendChild(card);
             } else if (book.status === 'reading') {
                 readingCol.appendChild(card);
             } else if (book.status === 'finished') {
                 finishedCol.appendChild(card);
             }
     });
-    
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    renderBoardWithBooks();
 });
