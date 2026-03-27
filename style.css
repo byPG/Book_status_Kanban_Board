@@ -329,3 +329,8 @@ input {
 .book-info button {
   width: 160px;
 }
+
+#selectStatus {
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.9);
+}

@@ -54,7 +54,7 @@ function renderSearchResults(booksFromAPI) {
         author.textContent = book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'Unknown author';
 
         const cover = document.createElement('img');
-        cover.src = book.volumeInfo.imageLinks?.thumbnail || 'image.png';
+        cover.src = book.volumeInfo.imageLinks?.thumbnail || 'image.png'; //? means
         cover.alt = book.volumeInfo.title || 'Book cover';
 
         const addBtn = document.createElement('button');
@@ -80,6 +80,14 @@ function renderSearchResults(booksFromAPI) {
             };
 
             const savedBooks = getBooks();
+
+            const alreadyExists = savedBooks.some((savedBook) => savedBook.id === bookObj.id);
+
+            if (alreadyExists) {
+                alert('This book is already on your board.');
+                return;
+            }
+
             savedBooks.push(bookObj);
             saveBooks(savedBooks);
             renderBoardWithBooks();
@@ -139,6 +147,25 @@ function renderBoardWithBooks(){
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
 
+        //create element select with options inside
+        const statusSelect = document.createElement('select');
+        statusSelect.id = 'selectStatus';
+        const optionToRead = document.createElement('option');
+        optionToRead.value = 'to-read';
+        optionToRead.textContent = 'To Read';
+        const optionReading = document.createElement('option');
+        optionReading.value = 'reading';
+        optionReading.textContent = 'Reading';
+        const optionFinished = document.createElement('option');
+        optionFinished.value = 'finished';
+        optionFinished.textContent = 'Finished';
+
+        statusSelect.appendChild(optionToRead);
+        statusSelect.appendChild(optionReading);
+        statusSelect.appendChild(optionFinished);
+
+        statusSelect.value = book.status;
+
         const card = document.createElement('article');
         card.classList.add('book-card', 'board-book-card');    
         
@@ -147,6 +174,7 @@ function renderBoardWithBooks(){
 
         info.appendChild(title);
         info.appendChild(author);
+        info.appendChild(statusSelect);        
         info.appendChild(deleteBtn);
 
         card.appendChild(cover);
@@ -162,15 +190,26 @@ function renderBoardWithBooks(){
             }
         });
 
+        statusSelect.addEventListener('change', () => {
+            const savedBooks = getBooks();
+            const bookToUpdate = savedBooks.find((b) => b.id === book.id);
+
+            if (bookToUpdate) {
+                bookToUpdate.status = statusSelect.value;
+                saveBooks(savedBooks);
+                renderBoardWithBooks();
+            }
+        });
+
             if (book.status === 'to-read') {
                 booksToReadCol.appendChild(card);
-            } else { console.log('book not added to the board'); }
-            // } else if (book.status === 'reading') {
-            //     readingCol.appendChild(card);
-            // } else if (book.status === 'finished') {
-            //     finishedCol.appendChild(card);
+            } else if (book.status === 'reading') {
+                readingCol.appendChild(card);
+            } else if (book.status === 'finished') {
+                finishedCol.appendChild(card);
             }
-    );};
+    });
+}
 
 
 document.addEventListener("DOMContentLoaded", function () {
