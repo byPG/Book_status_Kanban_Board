@@ -75,13 +75,13 @@ function renderSearchResults(booksFromAPI) {
                 id: book.id,
                 title: book.volumeInfo.title || 'No title',
                 author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'Unknown author',
-                cover: book.volumeInfo.imageLinks?.thumbnail || 'image.png',
+                cover: book.volumeInfo.imageLinks?.thumbnail || 'image.png', // ? - optional chaining - jesli imageLinks istnieje, wejdź do thumbnail; jesli imageLinks nie istnieje, nie wyrzucj błędu (program sie wywali)- zwróć undefined
                 status: 'to-read',
             };
 
             const savedBooks = getBooks();
 
-            const alreadyExists = savedBooks.some((savedBook) => savedBook.id === bookObj.id);
+            const alreadyExists = savedBooks.some((savedBook) => savedBook.id === bookObj.id); //some sprawdza czy chociaż jeden element istnieje wewnątrz savedBooks i zwraca true/false
 
             if (alreadyExists) {
                 alert('This book is already on your board.');
