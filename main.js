@@ -49,13 +49,13 @@ function renderSearchResults(booksFromAPI) {
     booksFromAPI.forEach((book) => {
         const title = document.createElement('h4');
         title.textContent = book.volumeInfo.title || 'No title';
+ 
+        const cover = document.createElement('img');
+        cover.src = book.volumeInfo.imageLinks?.thumbnail || 'image.png'; // ? - optional chaining - jesli imageLinks istnieje, wejdź do thumbnail; jesli imageLinks nie istnieje, nie wyrzucj błędu (program sie wywali)- zwróć undefined
+        cover.alt = book.volumeInfo.title || 'Book cover';
 
         const author = document.createElement('p');
         author.textContent = book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'Unknown author';
-
-        const cover = document.createElement('img');
-        cover.src = book.volumeInfo.imageLinks?.thumbnail || 'image.png'; //? means
-        cover.alt = book.volumeInfo.title || 'Book cover';
 
         const addBtn = document.createElement('button');
         addBtn.textContent = 'Add';  
@@ -75,7 +75,7 @@ function renderSearchResults(booksFromAPI) {
                 id: book.id,
                 title: book.volumeInfo.title || 'No title',
                 author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'Unknown author',
-                cover: book.volumeInfo.imageLinks?.thumbnail || 'image.png', // ? - optional chaining - jesli imageLinks istnieje, wejdź do thumbnail; jesli imageLinks nie istnieje, nie wyrzucj błędu (program sie wywali)- zwróć undefined
+                cover: book.volumeInfo.imageLinks?.thumbnail || 'image.png', 
                 status: 'to-read',
             };
 
@@ -147,9 +147,9 @@ function renderBoardWithBooks(){
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
 
-        //create element select with options inside
+        //create element SELECT with options inside
         const statusSelect = document.createElement('select');
-        statusSelect.id = 'selectStatus';
+        statusSelect.classList.add('select-status');
         const optionToRead = document.createElement('option');
         optionToRead.value = 'to-read';
         optionToRead.textContent = 'To Read';
